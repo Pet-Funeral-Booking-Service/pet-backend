@@ -1,4 +1,4 @@
-package com.pet.pet_funeral.domain.pet_funerals.model;
+package com.pet.pet_funeral.domain.pet_funeral.model;
 
 import com.pet.pet_funeral.domain.common.BaseTime;
 import jakarta.persistence.*;
@@ -19,7 +19,7 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Builder
-public class PetFunerals extends BaseTime {
+public class PetFuneral extends BaseTime {
 
     @Id
     @UuidGenerator
