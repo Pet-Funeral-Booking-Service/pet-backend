@@ -4,7 +4,7 @@ import com.pet.pet_funeral.domain.user.model.RefreshToken;
 import com.pet.pet_funeral.domain.user.model.User;
 import com.pet.pet_funeral.domain.user.repository.RefreshTokenRepository;
 import com.pet.pet_funeral.domain.user.repository.UserRepository;
-import com.pet.pet_funeral.redis.service.RedisService;
+import com.pet.pet_funeral.infra.redis.service.RedisService;
 import com.pet.pet_funeral.security.jwt.JwtService;
 import com.pet.pet_funeral.utils.OptionalUtil;
 import lombok.RequiredArgsConstructor;

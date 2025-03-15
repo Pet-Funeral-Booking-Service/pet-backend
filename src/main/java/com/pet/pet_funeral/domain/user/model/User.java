@@ -25,7 +25,7 @@ public class User extends BaseTime {
     private Long socialId;
 
     @Enumerated(EnumType.STRING)
-    private SocialType socialType;
+    private LoginType loginType;
 
     @Enumerated(EnumType.STRING)
     @Setter

@@ -3,7 +3,7 @@ package com.pet.pet_funeral.security.jwt;
 import com.pet.pet_funeral.domain.user.model.RefreshToken;
 import com.pet.pet_funeral.domain.user.repository.RefreshTokenRepository;
 import com.pet.pet_funeral.domain.user.service.RefreshTokenService;
-import com.pet.pet_funeral.redis.service.RedisService;
+import com.pet.pet_funeral.infra.redis.service.RedisService;
 import com.pet.pet_funeral.security.dto.LoginResponse;
 import com.pet.pet_funeral.security.service.CookieService;
 import com.pet.pet_funeral.security.service.LoginService;

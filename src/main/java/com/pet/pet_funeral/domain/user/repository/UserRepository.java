@@ -9,9 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
-
-    Optional<User> findById(UUID id);
+public interface UserRepository extends JpaRepository<User, UUID> {
 
     Optional<User> findBySocialId(Long socialId);
 }

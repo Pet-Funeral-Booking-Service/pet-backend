@@ -2,7 +2,7 @@ package com.pet.pet_funeral.security.service;
 
 import com.pet.pet_funeral.domain.user.model.User;
 import com.pet.pet_funeral.domain.user.repository.UserRepository;
-import com.pet.pet_funeral.redis.service.RedisService;
+import com.pet.pet_funeral.infra.redis.service.RedisService;
 import com.pet.pet_funeral.security.dto.AccessTokenPayload;
 import com.pet.pet_funeral.security.dto.LoginResponse;
 import com.pet.pet_funeral.security.dto.RefreshTokenPayload;

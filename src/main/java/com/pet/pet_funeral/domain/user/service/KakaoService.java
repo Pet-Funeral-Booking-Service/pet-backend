@@ -1,12 +1,11 @@
-package com.pet.pet_funeral.kakao.service;
+package com.pet.pet_funeral.domain.user.service;
 
 import com.pet.pet_funeral.domain.user.model.Role;
-import com.pet.pet_funeral.domain.user.model.SocialType;
+import com.pet.pet_funeral.domain.user.model.LoginType;
 import com.pet.pet_funeral.domain.user.model.User;
 import com.pet.pet_funeral.domain.user.repository.UserRepository;
-import com.pet.pet_funeral.domain.user.service.RefreshTokenService;
-import com.pet.pet_funeral.kakao.dto.KakaoTokenResponse;
-import com.pet.pet_funeral.kakao.dto.KakaoUserResponse;
+import com.pet.pet_funeral.domain.user.dto.KakaoTokenResponse;
+import com.pet.pet_funeral.domain.user.dto.KakaoUserResponse;
 import com.pet.pet_funeral.security.dto.AccessTokenPayload;
 import com.pet.pet_funeral.security.dto.LoginResponse;
 import com.pet.pet_funeral.security.dto.RefreshTokenPayload;
@@ -23,10 +22,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.Optional;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -46,7 +42,7 @@ public class KakaoService {
 
     @Transactional
     public LoginResponse kakaoLogin(String code){
-        String kakaoToken = getKakaoAccessToken(code);
+        String kakaoToken = getKakaoToken(code);
         log.info("kakaoAccessToken: {}", kakaoToken);
 
         Long kakaoId = getKakaoUser(kakaoToken);
@@ -59,10 +55,10 @@ public class KakaoService {
         String refreshToken = jwtService.createRefreshToken(new RefreshTokenPayload(user.getId(),new Date()));
         ResponseCookie responseCookie = cookieService.createRefreshTokenCookie(refreshToken);
         refreshTokenService.save(user.getId(), refreshToken);
-        return new LoginResponse(Role.ROLE_USER,accessToken,responseCookie);
+        return new LoginResponse(Role.USER,accessToken,responseCookie);
 
     }
-    public String getKakaoAccessToken(String code){
+    public String getKakaoToken(String code){
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -102,8 +98,8 @@ public class KakaoService {
     private User registerUser(Long kakaoId){
         User user = User.builder()
                 .socialId(kakaoId)
-                .socialType(SocialType.KAKAO)
-                .role(Role.ROLE_USER)
+                .loginType(LoginType.KAKAO)
+                .role(Role.USER)
                 .build();
 
         log.info("registerUser: {}", user);

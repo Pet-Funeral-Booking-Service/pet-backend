@@ -1,4 +1,4 @@
-package com.pet.pet_funeral.redis.service;
+package com.pet.pet_funeral.infra.redis.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,20 +35,16 @@ public class RedisService {
     }
     // 사용자 UUID 추출 (이메일 대신 UUID 기준으로)
     public Optional<UUID> getUserIdByRefreshToken(String refreshToken) {
+        // refresh:UUID 형식
+        // refresh 로 시작하는 key 값들 가져옴
         Set<String> keys = redisTemplate.keys("refresh:*");
+        if (keys == null || keys.isEmpty()) return Optional.empty();
 
-        if (keys != null) {
-            for (String key : keys) {
-                String storedToken = redisTemplate.opsForValue().get(key);
-                if (refreshToken.equals(storedToken)) {
-                    // "refresh:{UUID}" -> "{UUID}"
-                    String uuidString = key.replace("refresh:", "");
-                    return Optional.of(UUID.fromString(uuidString));
-                }
-            }
-        }
-
-        return Optional.empty();
+        return keys.stream()
+                .filter(key -> refreshToken.equals(redisTemplate.opsForValue().get(key)))
+                .map(key -> key.replace("refresh:", "")) // refresh 를 지우고 뒤에 UUID 를 가져옴
+                .map(UUID::fromString)
+                .findFirst();
     }
 
     // 토큰 삭제

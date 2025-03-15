@@ -1,6 +1,6 @@
 package com.pet.pet_funeral.domain.user.model;
 
 
-public enum SocialType {
+public enum LoginType {
     KAKAO,GOOGLE,APPLE
 }

@@ -1,6 +1,6 @@
 package com.pet.pet_funeral.api;
 
-import com.pet.pet_funeral.kakao.service.KakaoService;
+import com.pet.pet_funeral.domain.user.service.KakaoService;
 import com.pet.pet_funeral.security.dto.LoginResponse;
 import com.pet.pet_funeral.utils.SuccessResponse;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.pet.pet_funeral.redis.config;
+package com.pet.pet_funeral.infra.redis.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
