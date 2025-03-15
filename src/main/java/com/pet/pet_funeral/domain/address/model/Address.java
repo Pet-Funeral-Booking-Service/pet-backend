@@ -1,4 +1,4 @@
-package com.pet.pet_funeral.domain.pet_funerals.model;
+package com.pet.pet_funeral.domain.address.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
