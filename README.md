@@ -54,6 +54,11 @@ DB_PASSWORD=MYSQL비번
 docker-compose up
 ```
 
+4.docker-compose 종료 (서버 종료)
+```
+docker-compose down -v 
+```
+
 ⚠️ 선행 조건
 1. .env 파일을 클론받은 프로젝트와 동일한 위치에 존재해야함
 2. docker 설치 및 로그인 
