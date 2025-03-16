@@ -19,6 +19,35 @@
 **Database** : `MySQL`, `Redis`    
 **Devops** : `Docker`, `Jenkis`, `Aws Ec2`, `Aws RDS`, `Aws S3`
 
-### ⚒️ 프로젝트 시작  
+### ⚒️ 프로젝트 로컬 실행 방법
 
 ----
+
+1. git clone
+```
+https://github.com/Pet-Funeral-Booking-Service/pet-backend.git
+```
+
+2. .env 파일 생성 && 편집
+```
+//env 파일 생성 명령어
+touch .env 
+```
+
+```
+//env 파일 편집 명령어
+nano .env
+```
+
+env 파일의 값을 .env.example 를 참고해 설정한다. DB 는 MYSQL 은 8.3.0 를 사용한다.
+```
+DB_URL=jdbc:mysql://localhost:3306/{DB 스키가 이름}?serverTimezone=Asia/Seoul
+DB_USERNAME=root
+DB_PASSWORD=비밀번호
+```
+
+3.docker-compose 실행
+
+```
+docker-compose up -d 
+```
