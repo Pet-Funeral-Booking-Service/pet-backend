@@ -11,4 +11,6 @@ import java.util.UUID;
 @Repository
 public interface PetFuneralRepository extends JpaRepository<PetFuneral, UUID> {
     Page<PetFuneral> findByAddress_City(String addressCity, Pageable pageable);
+
+    boolean existsByName(String name);
 }

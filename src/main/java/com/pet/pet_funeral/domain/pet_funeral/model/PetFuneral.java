@@ -41,13 +41,13 @@ public class PetFuneral extends BaseTime {
     private Integer price;
 
     @Column(name = "phone_number", nullable = true)
-    private Integer phoneNumber;
+    private String phoneNumber;
 
     @Column(name = "homepage", nullable = true)
     private String homepage;
 
-    @Column(name = "is_legal", nullable = true)
-    private boolean isLegal;
+    @Column(name = "legal", nullable = true)
+    private boolean legal;
 
     @Setter
     @OneToOne

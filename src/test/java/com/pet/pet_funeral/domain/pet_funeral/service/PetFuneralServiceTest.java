@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.pet.pet_funeral.domain.address.model.Address;
 import com.pet.pet_funeral.domain.address.service.AddressService;
+import com.pet.pet_funeral.domain.pet_funeral.dto.PetFuneralRequest;
 import com.pet.pet_funeral.domain.pet_funeral.model.PetFuneral;
 import java.time.LocalTime;
 import java.util.List;
@@ -22,7 +23,7 @@ class PetFuneralServiceTest {
     @Autowired PetFuneralService petFuneralService;
     @Autowired AddressService addressService;
 
-    private PetFuneral petFuneral;
+    private PetFuneralRequest petFuneral;
 
     @BeforeEach
     void mock객체생성() {
@@ -34,14 +35,14 @@ class PetFuneralServiceTest {
                 .build();
         addressService.save(address);
         // given
-        petFuneral = PetFuneral.builder()
+        petFuneral = PetFuneralRequest.builder()
                 .name("강남 펫 장례식장")
                 .openAt(LocalTime.of(9, 0))
                 .closeAt(LocalTime.of(18, 0))
                 .price(500000)
-                .phoneNumber(123456789)
+                .phoneNumber("123456789")
                 .homepage("https://petfuneral.com")
-                .isLegal(true)
+                .legal(true)
                 .address(address)
                 .build();
     }
@@ -52,7 +53,8 @@ class PetFuneralServiceTest {
         UUID saveId = petFuneralService.save(petFuneral);
 
         // then
-        assertEquals(petFuneral.getId(), saveId);
+        PetFuneral funeral = petFuneralService.findById(saveId);
+        assertEquals(petFuneral.name(), funeral.getName());
     }
 
     @Test
@@ -65,7 +67,6 @@ class PetFuneralServiceTest {
         List<PetFuneral> content = petFuneralPage.getContent();
 
         // then
-        assertEquals(petFuneral.getName(), content.get(0).getName());
-
+        assertEquals(petFuneral.name(), content.get(0).getName());
     }
 }
