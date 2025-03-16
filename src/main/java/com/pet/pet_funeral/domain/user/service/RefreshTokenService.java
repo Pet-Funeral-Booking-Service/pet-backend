@@ -30,18 +30,20 @@ public class RefreshTokenService {
 
     // db,redis 에 토큰 저장
     @Transactional
-    public void save(UUID id, String refreshToken) {
+    public void updateRefreshToken(UUID id, String refreshToken) {
         User user = OptionalUtil.getOrElseThrow(userRepository.findById(id),"존재하지 않는 사용자입니다.");
-        LocalDateTime expiredAt = LocalDateTime.now().plusSeconds(refreshKeyExpiration);
-        refreshTokenRepository.save(
-                RefreshToken.builder()
-                        .user(user)
-                        .token(refreshToken)
-                        .createdAt(LocalDateTime.now())
-                        .expiredAt(expiredAt)
-                        .build()
-        );
-        redisService.saveRefreshToken(id, refreshToken);
+
+        RefreshToken refreshTokenEntity = refreshTokenRepository.findByUser(user)
+                .orElseGet(() -> refreshTokenRepository.save(
+                        RefreshToken.builder()
+                                .user(user)
+                                .token(refreshToken)
+                                .createdAt(LocalDateTime.now())
+                                .expiredAt(LocalDateTime.now().plusSeconds(refreshKeyExpiration))
+                                .build()
+                ));
+        refreshTokenEntity.updateRefreshToken(refreshToken,refreshKeyExpiration);
+        redisService.updateRefreshToken(id, refreshToken);
     }
 
 }

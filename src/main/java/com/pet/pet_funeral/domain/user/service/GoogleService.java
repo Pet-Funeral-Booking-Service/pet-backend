@@ -1,19 +1,16 @@
 package com.pet.pet_funeral.domain.user.service;
-
-import com.pet.pet_funeral.domain.user.model.Role;
+import com.pet.pet_funeral.domain.user.dto.GoogleUserResponse;
+import com.pet.pet_funeral.domain.user.dto.KakaoTokenResponse;
 import com.pet.pet_funeral.domain.user.model.LoginType;
+import com.pet.pet_funeral.domain.user.model.Role;
 import com.pet.pet_funeral.domain.user.model.User;
 import com.pet.pet_funeral.domain.user.repository.UserRepository;
-import com.pet.pet_funeral.domain.user.dto.KakaoTokenResponse;
-import com.pet.pet_funeral.domain.user.dto.KakaoUserResponse;
-import com.pet.pet_funeral.infra.redis.service.RedisService;
 import com.pet.pet_funeral.security.dto.AccessTokenPayload;
 import com.pet.pet_funeral.security.dto.LoginResponse;
 import com.pet.pet_funeral.security.dto.RefreshTokenPayload;
 import com.pet.pet_funeral.security.jwt.JwtService;
 import com.pet.pet_funeral.security.service.CookieService;
 import lombok.RequiredArgsConstructor;
-
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,87 +26,87 @@ import java.util.Date;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class KakaoService {
+public class GoogleService {
 
-    @Value("${kakao.client_id}")
-    private String kakaoApiKey;
+    @Value("${google.client_id}")
+    private String googleApiKey;
 
-    @Value("${kakao.redirect_uri}")
-    private String kakaoRedirectUri;
+    @Value("${google.client_secret}")
+    private String googleSecret;
 
-    private final String KAKAO_TOKEN_URL = "https://kauth.kakao.com/oauth/token";
-    private final String KAKAO_USER_URL = "https://kapi.kakao.com/v2/user/me";
+    @Value("${google.redirect_url}")
+    private String googleUrl;
+
+    // private final String GOOGLE_LOGIN_URL = "https://accounts/google.com/o/oauth2/v2/auth";
+    private final String GOOGLE_USER_URL = "https://www.googleapis.com/userinfo/v2/me";
+    private final String GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 
     private final UserRepository userRepository;
     private final JwtService jwtService;
-    private final CookieService cookieService;
     private final RefreshTokenService refreshTokenService;
-    private final RedisService redisService;
+    private final CookieService cookieService;
 
     @Transactional
-    public LoginResponse kakaoLogin(String code){
-        String kakaoToken = getKakaoToken(code);
-        log.info("kakaoAccessToken: {}", kakaoToken);
+    public LoginResponse login(String code){
+        // 토큰 받고
+        String googleToken = getGoogleToken(code);
 
-        String kakaoId = String.valueOf(getKakaoUser(kakaoToken));
-        log.info("kakaoId: {}", kakaoId);
+        // 토큰으로 유저 불러오고
+        GoogleUserResponse googleUser = getGoogleUser(googleToken);
+        String googleId = googleUser.getId();
 
-        User user = userRepository.findBySocialId(kakaoId)
-                .orElseGet(() -> registerUser(kakaoId));
+        // 유저 저장
+        User user = userRepository.findBySocialId(googleId)
+                .orElseGet(() -> registerUser(googleId));
 
+        // 내 서버 토큰 생성
         String accessToken = jwtService.createAccessToken(new AccessTokenPayload(user.getId(),user.getRole(),new Date()));
         String refreshToken = jwtService.createRefreshToken(new RefreshTokenPayload(user.getId(),new Date()));
         ResponseCookie responseCookie = cookieService.createRefreshTokenCookie(refreshToken);
-        // 로그인하고 이미 DB 에 저장된 유저가 다시 로그인할 때 리프레시값이 중복되지 않으려면 수정 로직 필요
         refreshTokenService.updateRefreshToken(user.getId(),refreshToken);
-        return new LoginResponse(Role.USER,accessToken,responseCookie);
+        return new LoginResponse(user.getRole(),accessToken,responseCookie);
+
     }
 
-    public String getKakaoToken(String code){
+    public String getGoogleToken(String code){
         RestTemplate restTemplate = new RestTemplate();
-
         HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + code);
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        MultiValueMap<String,String> params = new LinkedMultiValueMap<>();
-        params.add("grant_type", "authorization_code");
-        params.add("client_id", kakaoApiKey);
-        params.add("redirect_uri", kakaoRedirectUri);
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("code", code);
+        params.add("client_id", googleApiKey);
+        params.add("client_secret", googleSecret);
+        params.add("redirect_uri", googleUrl);
+        params.add("grant_type", "authorization_code");
 
-        HttpEntity<MultiValueMap<String,String>> request = new HttpEntity<>(params, headers);
-
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
         ResponseEntity<KakaoTokenResponse> response = restTemplate.postForEntity(
-                KAKAO_TOKEN_URL,
-                request,
-                KakaoTokenResponse.class
-        );
+                GOOGLE_TOKEN_URL, request, KakaoTokenResponse.class);
+
         return response.getBody().getAccessToken();
     }
-    private Long getKakaoUser(String accessToken){
+    public GoogleUserResponse getGoogleUser(String accessToken){
         RestTemplate restTemplate = new RestTemplate();
-
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + accessToken);
 
         HttpEntity<Void> request = new HttpEntity<>(headers);
 
-        ResponseEntity<KakaoUserResponse> response = restTemplate.exchange(
-                KAKAO_USER_URL,
-                HttpMethod.GET,
-                request,
-                KakaoUserResponse.class
+        ResponseEntity<GoogleUserResponse> response = restTemplate.exchange(
+                GOOGLE_USER_URL, HttpMethod.GET,request,GoogleUserResponse.class
         );
-        return response.getBody().getId();
+        return response.getBody();
     }
-    private User registerUser(String kakaoId){
+    public User registerUser(String googleId){
         User user = User.builder()
-                .socialId(kakaoId)
-                .loginType(LoginType.KAKAO)
+                .socialId(googleId)
                 .role(Role.USER)
+                .loginType(LoginType.GOOGLE)
                 .build();
-
-        log.info("registerUser: {}", user);
         return userRepository.save(user);
     }
+
+
 }

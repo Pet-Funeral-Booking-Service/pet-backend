@@ -24,7 +24,6 @@ public class KakaoController {
     public ResponseEntity<?> callback(@RequestParam String code){
         LoginResponse loginResponse = kakaoService.kakaoLogin(code);
         SuccessResponse response = new SuccessResponse(true,"카카오 로그인 성공",loginResponse);
-
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

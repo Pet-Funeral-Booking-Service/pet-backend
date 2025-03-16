@@ -41,11 +41,8 @@ public class RefreshToken {
     @Column(name = "expired_at", nullable = false)
     private LocalDateTime expiredAt;
 
-    @Builder
-    public RefreshToken(User user, String token, LocalDateTime createdAt, LocalDateTime expiredAt) {
-        this.user = user;
-        this.token = token;
-        this.createdAt = createdAt;
-        this.expiredAt = expiredAt;
+    public void updateRefreshToken(String refreshToken, long expiration) {
+        this.token = refreshToken;
+        this.expiredAt = LocalDateTime.now().plusSeconds(expiration);
     }
 }

@@ -22,7 +22,7 @@ public class User extends BaseTime {
     @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
 
-    private Long socialId;
+    private String socialId;
 
     @Enumerated(EnumType.STRING)
     private LoginType loginType;

@@ -36,10 +36,10 @@ public class JwtService {
     private String issuer; // 발급자 정보 식별위함
 
     @Value("${jwt.access.expiration}")
-    private long accessKeyExpiration;
+    private long accessKeyExpiration; // 30분
 
     @Value("${jwt.refresh.expiration}")
-    private long refreshKeyExpiration;
+    private long refreshKeyExpiration; // 14일
 
     @Value("${jwt.access.header}")
     private String accessHeader;

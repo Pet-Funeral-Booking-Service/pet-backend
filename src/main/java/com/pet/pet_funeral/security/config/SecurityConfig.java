@@ -37,6 +37,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/v1/api/kakao/**","/login").permitAll()
+                        .requestMatchers("/v1/api/google/**").permitAll()
                         .anyRequest().authenticated()
                 );
         return http.build();

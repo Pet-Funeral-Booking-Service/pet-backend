@@ -121,7 +121,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
         log.info("요청 경로: {}", path);
-        return path.startsWith("/v1/api/kakao") || path.equals("/favicon.ico");
+        return path.startsWith("/v1/api/kakao") || path.equals("/favicon.ico") || path.startsWith("/v1/api/google");
 
     }
 /**

@@ -11,6 +11,4 @@ import lombok.NoArgsConstructor;
 @Builder
 public class KakaoUserResponse {
    private Long id;
-
-
 }
