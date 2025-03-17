@@ -1,9 +1,13 @@
 package com.pet.pet_funeral.domain.pet_funeral.service;
 
 import com.pet.pet_funeral.domain.pet_funeral.dto.PetFuneralRequest;
+import com.pet.pet_funeral.domain.pet_funeral.mapper.PetFuneralMapper;
 import com.pet.pet_funeral.domain.pet_funeral.model.PetFuneral;
 import com.pet.pet_funeral.domain.pet_funeral.repository.PetFuneralRepository;
+import com.pet.pet_funeral.exception.code.BadRequestExceptionCode;
+import com.pet.pet_funeral.exception.code.ExistValueExceptionCode;
 import java.util.UUID;
+import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,26 +20,26 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class PetFuneralService {
     private final PetFuneralRepository petFuneralRepository;
+    private final PetFuneralMapper petFuneralMapper;
+
+    private <T> T exceptionHandler(Supplier<T> service) {
+        try {
+            return service.get();
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestExceptionCode(e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("서버 오류 발생", e);
+        }
+    }
 
     @Transactional
     public UUID save(PetFuneralRequest petFuneralDto) {
         boolean exists = petFuneralRepository.existsByName(petFuneralDto.name());
         if (exists) {
-            throw new IllegalArgumentException("이미 존재하는 장례식장 이름입니다.");
+            throw new ExistValueExceptionCode("이미 존재하는 장례식장 이름입니다.");
         }
-
-        PetFuneral petFuneral = PetFuneral.builder()
-                .name(petFuneralDto.name())
-                .openAt(petFuneralDto.openAt())
-                .closeAt(petFuneralDto.closeAt())
-                .price(petFuneralDto.price())
-                .phoneNumber(petFuneralDto.phoneNumber())
-                .homepage(petFuneralDto.homepage())
-                .legal(petFuneralDto.legal())
-                .address(petFuneralDto.address())
-                .build();
-        PetFuneral save = petFuneralRepository.save(petFuneral);
-        return save.getId();
+        PetFuneral petFuneral = petFuneralMapper.toMessageBodyDto(petFuneralDto);
+        return exceptionHandler(() -> petFuneralRepository.save(petFuneral).getId());
     }
 
     public PetFuneral findById(UUID id) {

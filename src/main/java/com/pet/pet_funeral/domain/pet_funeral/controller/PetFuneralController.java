@@ -19,13 +19,7 @@ public class PetFuneralController {
 
     @RequestMapping("/register")
     public ResponseEntity<?> createPetFuneral(@RequestBody @Valid PetFuneralRequest request) {
-        try {
-            petFuneralService.save(request);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new SuccessResponse<>(false, e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new SuccessResponse<>(false, e.getMessage(), null));
-        }
+        petFuneralService.save(request);
         SuccessResponse<String> response = new SuccessResponse<>(true, "장례식장 등록 성공", null);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
