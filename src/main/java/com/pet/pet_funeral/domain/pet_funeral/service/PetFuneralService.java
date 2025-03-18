@@ -1,5 +1,7 @@
 package com.pet.pet_funeral.domain.pet_funeral.service;
 
+import com.pet.pet_funeral.domain.address.model.Address;
+import com.pet.pet_funeral.domain.address.repository.AddressRepository;
 import com.pet.pet_funeral.domain.pet_funeral.dto.PetFuneralRequest;
 import com.pet.pet_funeral.domain.pet_funeral.mapper.PetFuneralMapper;
 import com.pet.pet_funeral.domain.pet_funeral.model.PetFuneral;
@@ -22,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PetFuneralService {
     private final PetFuneralRepository petFuneralRepository;
     private final PetFuneralMapper petFuneralMapper;
+    private final AddressRepository addressRepository;
 
     @Transactional
     public UUID save(PetFuneralRequest petFuneralDto) {
@@ -29,7 +32,9 @@ public class PetFuneralService {
         if (exists) {
             throw new ExistValueExceptionCode("이미 존재하는 장례식장 이름입니다.");
         }
+        Address address = addressRepository.save(petFuneralDto.address());
         PetFuneral petFuneral = petFuneralMapper.toMessageBodyDto(petFuneralDto);
+        petFuneral.setAddress(address);
         return petFuneralRepository.save(petFuneral).getId();
     }
 
