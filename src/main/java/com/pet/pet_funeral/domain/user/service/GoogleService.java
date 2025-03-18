@@ -5,6 +5,8 @@ import com.pet.pet_funeral.domain.user.model.LoginType;
 import com.pet.pet_funeral.domain.user.model.Role;
 import com.pet.pet_funeral.domain.user.model.User;
 import com.pet.pet_funeral.domain.user.repository.UserRepository;
+import com.pet.pet_funeral.domain.user.service.impl.SocialLoginService;
+import com.pet.pet_funeral.domain.user.service.impl.SocialLoginServiceImpl;
 import com.pet.pet_funeral.security.dto.AccessTokenPayload;
 import com.pet.pet_funeral.security.dto.LoginResponse;
 import com.pet.pet_funeral.security.dto.RefreshTokenPayload;
@@ -25,8 +27,7 @@ import java.util.Date;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
-public class GoogleService {
+public class GoogleService extends SocialLoginServiceImpl {
 
     @Value("${google.client_id}")
     private String googleApiKey;
@@ -41,34 +42,38 @@ public class GoogleService {
     private final String GOOGLE_USER_URL = "https://www.googleapis.com/userinfo/v2/me";
     private final String GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 
-    private final UserRepository userRepository;
-    private final JwtService jwtService;
-    private final RefreshTokenService refreshTokenService;
-    private final CookieService cookieService;
 
-    @Transactional
-    public LoginResponse login(String code){
-        // 토큰 받고
-        String googleToken = getGoogleToken(code);
-
-        // 토큰으로 유저 불러오고
-        GoogleUserResponse googleUser = getGoogleUser(googleToken);
-        String googleId = googleUser.getId();
-
-        // 유저 저장
-        User user = userRepository.findBySocialId(googleId)
-                .orElseGet(() -> registerUser(googleId));
-
-        // 내 서버 토큰 생성
-        String accessToken = jwtService.createAccessToken(new AccessTokenPayload(user.getId(),user.getRole(),new Date()));
-        String refreshToken = jwtService.createRefreshToken(new RefreshTokenPayload(user.getId(),new Date()));
-        ResponseCookie responseCookie = cookieService.createRefreshTokenCookie(refreshToken);
-        refreshTokenService.updateRefreshToken(user.getId(),refreshToken);
-        return new LoginResponse(user.getRole(),accessToken,responseCookie);
-
+    public GoogleService(UserRepository userRepository, JwtService jwtService, CookieService cookieService, RefreshTokenService refreshTokenService) {
+        super(userRepository, jwtService, cookieService, refreshTokenService);
     }
 
-    public String getGoogleToken(String code){
+//    @Transactional
+//    public LoginResponse login(String code){
+//        // 토큰 받고
+//        String googleToken = getToken(code);
+//
+//        // 토큰으로 유저 불러오고
+//        String googleId = getUser(googleToken);
+//
+//        // 유저 저장
+//        User user = userRepository.findBySocialId(googleId)
+//                .orElseGet(() -> register(googleId));
+//
+//        // 내 서버 토큰 생성
+//        String accessToken = jwtService.createAccessToken(new AccessTokenPayload(user.getId(),user.getRole(),new Date()));
+//        String refreshToken = jwtService.createRefreshToken(new RefreshTokenPayload(user.getId(),new Date()));
+//        ResponseCookie responseCookie = cookieService.createRefreshTokenCookie(refreshToken);
+//        refreshTokenService.updateRefreshToken(user.getId(),refreshToken);
+//        return new LoginResponse(user.getRole(),accessToken,responseCookie);
+//
+//    }
+
+    @Override
+    public LoginType getLoginType() {
+        return LoginType.GOOGLE;
+    }
+
+    public String getToken(String code){
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + code);
@@ -87,7 +92,7 @@ public class GoogleService {
 
         return response.getBody().getAccessToken();
     }
-    public GoogleUserResponse getGoogleUser(String accessToken){
+    public String getUser(String accessToken){
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + accessToken);
@@ -97,16 +102,9 @@ public class GoogleService {
         ResponseEntity<GoogleUserResponse> response = restTemplate.exchange(
                 GOOGLE_USER_URL, HttpMethod.GET,request,GoogleUserResponse.class
         );
-        return response.getBody();
+        return response.getBody().getId();
     }
-    public User registerUser(String googleId){
-        User user = User.builder()
-                .socialId(googleId)
-                .role(Role.USER)
-                .loginType(LoginType.GOOGLE)
-                .build();
-        return userRepository.save(user);
-    }
+
 
 
 }
