@@ -7,7 +7,7 @@ package com.pet.pet_funeral.exception;
  */
 public enum ErrorResponseCode {
     NOT_FOUND(4041);
-    
+
     private final int code;
 
     ErrorResponseCode(int c) {
@@ -18,3 +18,4 @@ public enum ErrorResponseCode {
         return this.code;
     }
 }
+

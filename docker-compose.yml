@@ -1,0 +1,36 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: pet-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}  # root 비밀번호만 설정
+      MYSQL_DATABASE: pet_service # DB 스키마 이름
+    ports:
+      - "3307:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - pet-network
+
+  backend:
+    image: ghcr.io/pet-funeral-booking-service/pet-backend-image:v1
+    container_name: pet-backend
+    restart: always
+    depends_on:
+      - db
+    command: ["./wait-for-it.sh", "db:3306", "--", "java", "-jar"]
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    networks:
+      - pet-network
+
+volumes:
+  db-data:
+
+networks:
+  pet-network:
+    driver: bridge

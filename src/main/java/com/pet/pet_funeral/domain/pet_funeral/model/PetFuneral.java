@@ -1,11 +1,13 @@
 package com.pet.pet_funeral.domain.pet_funeral.model;
 
+import com.pet.pet_funeral.domain.address.model.Address;
 import com.pet.pet_funeral.domain.common.BaseTime;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -15,7 +17,7 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "`pet_funerals`")
+@Table(name = "`pet_funeral`")
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Builder
@@ -32,7 +34,6 @@ public class PetFuneral extends BaseTime {
     @Column(name = "open_at", nullable = true)
     private LocalTime openAt;
 
-
     @Column(name = "close_at", nullable = true)
     private LocalTime closeAt;
 
@@ -40,11 +41,16 @@ public class PetFuneral extends BaseTime {
     private Integer price;
 
     @Column(name = "phone_number", nullable = true)
-    private Integer phoneNumber;
+    private String phoneNumber;
 
     @Column(name = "homepage", nullable = true)
     private String homepage;
 
-    @Column(name = "is_legal", nullable = true)
-    private boolean isLegal;
+    @Column(name = "legal", nullable = true)
+    private boolean legal;
+
+    @Setter
+    @OneToOne
+    @JoinColumn(name = "address_id")
+    private Address address;
 }
