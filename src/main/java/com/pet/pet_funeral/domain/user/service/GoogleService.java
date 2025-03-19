@@ -35,12 +35,17 @@ public class GoogleService extends SocialLoginServiceImpl {
     @Value("${google.client_secret}")
     private String googleSecret;
 
-    @Value("${google.redirect_url}")
-    private String googleUrl;
+    @Value("${google.redirect_uri}")
+    private String googleRedirectUrl;
+
+    @Value("${google.user_url}")
+    private String googleUserUrl;
+
+    @Value("${google.token_url}")
+    private String googleTokenUrl;
 
     // private final String GOOGLE_LOGIN_URL = "https://accounts/google.com/o/oauth2/v2/auth";
-    private final String GOOGLE_USER_URL = "https://www.googleapis.com/userinfo/v2/me";
-    private final String GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
+
 
 
     public GoogleService(UserRepository userRepository, JwtService jwtService, CookieService cookieService, RefreshTokenService refreshTokenService) {
@@ -83,12 +88,12 @@ public class GoogleService extends SocialLoginServiceImpl {
         params.add("code", code);
         params.add("client_id", googleApiKey);
         params.add("client_secret", googleSecret);
-        params.add("redirect_uri", googleUrl);
+        params.add("redirect_uri", googleRedirectUrl);
         params.add("grant_type", "authorization_code");
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
         ResponseEntity<KakaoTokenResponse> response = restTemplate.postForEntity(
-                GOOGLE_TOKEN_URL, request, KakaoTokenResponse.class);
+                googleTokenUrl, request, KakaoTokenResponse.class);
 
         return response.getBody().getAccessToken();
     }
@@ -100,7 +105,7 @@ public class GoogleService extends SocialLoginServiceImpl {
         HttpEntity<Void> request = new HttpEntity<>(headers);
 
         ResponseEntity<GoogleUserResponse> response = restTemplate.exchange(
-                GOOGLE_USER_URL, HttpMethod.GET,request,GoogleUserResponse.class
+                googleUserUrl, HttpMethod.GET,request,GoogleUserResponse.class
         );
         return response.getBody().getId();
     }

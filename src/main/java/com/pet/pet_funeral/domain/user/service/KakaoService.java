@@ -37,8 +37,12 @@ public class KakaoService extends SocialLoginServiceImpl {
     @Value("${kakao.redirect_uri}")
     private String kakaoRedirectUri;
 
-    private final String KAKAO_TOKEN_URL = "https://kauth.kakao.com/oauth/token";
-    private final String KAKAO_USER_URL = "https://kapi.kakao.com/v2/user/me";
+    @Value("${kakao.user_url}")
+    private String kakaoUserUrl;
+
+    @Value("${kakao.token_url")
+    private String kakaoTokenUrl;
+
 
     public KakaoService(UserRepository userRepository, JwtService jwtService, CookieService cookieService, RefreshTokenService refreshTokenService) {
         super(userRepository, jwtService, cookieService, refreshTokenService);
@@ -65,7 +69,7 @@ public class KakaoService extends SocialLoginServiceImpl {
         HttpEntity<MultiValueMap<String,String>> request = new HttpEntity<>(params, headers);
 
         ResponseEntity<KakaoTokenResponse> response = restTemplate.postForEntity(
-                KAKAO_TOKEN_URL,
+                kakaoTokenUrl,
                 request,
                 KakaoTokenResponse.class
         );
@@ -80,7 +84,7 @@ public class KakaoService extends SocialLoginServiceImpl {
         HttpEntity<Void> request = new HttpEntity<>(headers);
 
         ResponseEntity<KakaoUserResponse> response = restTemplate.exchange(
-                KAKAO_USER_URL,
+                kakaoUserUrl,
                 HttpMethod.GET,
                 request,
                 KakaoUserResponse.class
