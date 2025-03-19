@@ -3,6 +3,8 @@ package com.pet.pet_funeral.security.jwt;
 import com.pet.pet_funeral.domain.user.model.RefreshToken;
 import com.pet.pet_funeral.domain.user.repository.RefreshTokenRepository;
 import com.pet.pet_funeral.domain.user.service.RefreshTokenService;
+import com.pet.pet_funeral.exception.code.JwtValidationExceptionCode;
+import com.pet.pet_funeral.exception.code.JwtVerifyExceptionCode;
 import com.pet.pet_funeral.infra.redis.service.RedisService;
 import com.pet.pet_funeral.security.dto.LoginResponse;
 import com.pet.pet_funeral.security.service.CookieService;
@@ -54,14 +56,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             log.info("Access token: {}", accessToken);
 
             if(accessToken != null && !jwtService.isTokenExpired(accessToken)){
-                checkAccessToken(accessToken);
+                validateAccessToken(accessToken);
                 filterChain.doFilter(request, response);
                 return;
             }
             validateRefreshToken(request,response);
 
             String newAccessToken = String.valueOf(jwtService.extractAccessToken(request));
-            checkAccessToken(newAccessToken);
+            validateAccessToken(newAccessToken);
             filterChain.doFilter(request, response);
         } catch (JwtException ex) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않은 토큰입니다.");
@@ -71,30 +73,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     /**
      * 토큰 검증 후 filter
      */
-    private ResponseEntity<SuccessResponse> validateRefreshToken(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException  {
-        // 쿠키에서 리프레시 토큰 가져오기
-        Optional<String> refreshTokenOpt = cookieService.getRefreshTokenFromCookie(request);
-        // 토큰 존재 유무 확인
-        if(refreshTokenOpt.isEmpty()){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new SuccessResponse(false, "RefreshToken 이 없습니다.", null));
-        }
-        // 토큰 유효성 검증
-        String refreshToken = refreshTokenOpt.get(); // 사용자의 리프레시 토큰
-        jwtService.isTokenExpired(refreshToken); // 예외처리 추후에 설정
+    private ResponseEntity<SuccessResponse> validateRefreshToken(HttpServletRequest request, HttpServletResponse response) throws JwtVerifyExceptionCode,JwtValidationExceptionCode{
+        // 토큰 추출
+        String refreshToken = extractRefreshToken(request);
 
+        // 토큰 검증
+        jwtService.verifyToken(refreshToken);
+
+        // 리프레시 토큰 비교
         Optional<UUID> userId = redisService.getUserIdByRefreshToken(refreshToken);
-
-        String redisToken = String.valueOf(redisService.getRefreshToken(userId.get()));
-
-        if (redisToken == null || !redisToken.equals(refreshToken)) {
-            RefreshToken refreshTokenInDB = OptionalUtil.getOrElseThrow(refreshTokenRepository.findByToken(refreshToken),"존재하지 않는 refreshToken 입니다.");
-
-            if(!refreshTokenInDB.getToken().equals(refreshToken)){
-                throw new IllegalArgumentException("Refresh Token Not Matched");
-            }
-            redisService.saveRefreshToken(userId.get(), refreshToken);
-        }
+        checkRefreshToken(userId.get(),refreshToken);
 
         // 엑세스 토큰 생성
         LoginResponse loginResponse = loginService.login(userId.get());
@@ -107,8 +95,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     }
 
-
-    private void checkAccessToken(String accessToken) throws ServletException, IOException {
+    private void validateAccessToken(String accessToken) throws JwtVerifyExceptionCode{
         Claims claims = jwtService.verifyToken(accessToken);
         String email = claims.getSubject();
         String role = claims.get("role", String.class);
@@ -117,6 +104,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, List.of(grantedAuthority));
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
+
+    private String extractRefreshToken(HttpServletRequest request) {
+        return cookieService.getRefreshTokenFromCookie(request)
+                .orElseThrow(()-> new JwtValidationExceptionCode("토큰이 존재하지 않습니다."));
+    }
+
+    private void checkRefreshToken(UUID userId,String refreshToken) throws JwtValidationExceptionCode{
+
+        String redisToken = String.valueOf(redisService.getRefreshToken(userId));
+
+        if (redisToken == null || !redisToken.equals(refreshToken)) {
+            RefreshToken refreshTokenInDB =refreshTokenRepository.findByToken(refreshToken)
+                    .orElseThrow(() -> new JwtValidationExceptionCode("존재하지 않는 토큰입니다."));
+
+            if(!refreshTokenInDB.getToken().equals(refreshToken)){
+                throw new JwtValidationExceptionCode("Refresh Token Not Matched");
+            }
+            redisService.saveRefreshToken(userId, refreshToken);
+        }
+    }
+
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();

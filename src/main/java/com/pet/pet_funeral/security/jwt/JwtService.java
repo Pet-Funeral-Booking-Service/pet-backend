@@ -1,5 +1,7 @@
 package com.pet.pet_funeral.security.jwt;
 
+import com.pet.pet_funeral.exception.code.JwtExpirationExceptionCode;
+import com.pet.pet_funeral.exception.code.JwtVerifyExceptionCode;
 import com.pet.pet_funeral.security.dto.AccessTokenPayload;
 import com.pet.pet_funeral.security.dto.RefreshTokenPayload;
 import com.pet.pet_funeral.security.service.CookieService;
@@ -54,7 +56,7 @@ public class JwtService {
     /**
      * 토큰 유효성 검증이후 Claims 반환
      */
-    public Claims verifyToken(String token) throws ServletException, IOException {
+    public Claims verifyToken(String token) throws JwtVerifyExceptionCode {
         try {
             log.info("Verifying token {}", token);
             return Jwts.parser()
@@ -62,23 +64,20 @@ public class JwtService {
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-        }catch (JwtException e) {
-            log.error("JWT token verification failed", e);
-            throw e;
-
+        }catch (IllegalArgumentException e){
+            throw new JwtVerifyExceptionCode("JWT token is invalid");
         }
     }
     /**
      * 토큰의 만료 여부만 판단
      * 토큰 재발급 시 사용
      */
-    public boolean isTokenExpired(String token) {
-        try{
+    public boolean isTokenExpired(String token) throws JwtExpirationExceptionCode{
+        try {
             Claims claims = verifyToken(token);
             return claims.getExpiration().before(new Date());
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return true;
+        }catch (JwtVerifyExceptionCode e){
+            throw new JwtExpirationExceptionCode("JWT token is expired");
         }
     }
 
