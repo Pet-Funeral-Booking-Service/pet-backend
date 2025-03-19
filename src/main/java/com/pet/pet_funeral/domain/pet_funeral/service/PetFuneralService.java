@@ -9,6 +9,7 @@ import com.pet.pet_funeral.domain.pet_funeral.repository.PetFuneralRepository;
 import com.pet.pet_funeral.exception.code.BadRequestExceptionCode;
 import com.pet.pet_funeral.exception.code.ExistValueExceptionCode;
 import com.pet.pet_funeral.exception.code.NotFoundDataExceptionCode;
+import com.pet.pet_funeral.utils.OptionalUtil;
 import java.util.UUID;
 import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class PetFuneralService {
     private final PetFuneralRepository petFuneralRepository;
     private final PetFuneralMapper petFuneralMapper;
     private final AddressRepository addressRepository;
+    private OptionalUtil optionalUtil;
 
     @Transactional
     public UUID save(PetFuneralRequest petFuneralDto) {
@@ -39,8 +41,8 @@ public class PetFuneralService {
     }
 
     public PetFuneral findById(UUID id) {
-        return petFuneralRepository.findById(id)
-                .orElseThrow(() -> new NotFoundDataExceptionCode("해당 장례식장이 존재하지 않습니다."));
+        return OptionalUtil.getOrElseThrow(petFuneralRepository.findById(id),
+                "해당 장례식장이 존재하지 않습니다.");
     }
 
     public Page<PetFuneral> findByCity(String city, int page, int size) {
