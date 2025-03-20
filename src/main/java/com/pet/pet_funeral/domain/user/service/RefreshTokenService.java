@@ -15,13 +15,18 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * todo
+ * RefreshTokenService 는  domain/user 보다는 security 폴더에 있는거 더 역할이 잘 분리될 듯 보임
+ */
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
+
     private final RedisService redisService;
-    private final JwtService jwtService;
+
     private final UserRepository userRepository;
 
     @Value("${jwt.refresh.expiration}")

@@ -19,14 +19,6 @@ public class CorsConfig {
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
-
         return source;
     }
 }
-
-/**
- * CORS? - 교차 출처 리소스 공유
- * 브라우저가 다른 출처에서 온 요청을 차단하는 보안 정책
- *
- * CORS 를 허용해야 다른 도메인 주소(프론트엔드)를 허용할 수 있음
- */

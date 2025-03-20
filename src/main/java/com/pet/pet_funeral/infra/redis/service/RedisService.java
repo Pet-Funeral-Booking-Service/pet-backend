@@ -10,6 +10,11 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * todo
+ * RedisService 보다 JwtCacheService 이런식으로 네이밍 한 뒤 security/service 경로에 넣으면 좋을 것 같음
+ * 나중에 infra 모듈을 따로 분리하게 될 경우 RedisService 가 토큰 관련 기능을 담당하고 있어 역할 분리가 힘들 것 같음
+ */
 @Service
 @RequiredArgsConstructor
 public class RedisService {

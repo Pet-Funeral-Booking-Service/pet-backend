@@ -1,7 +1,7 @@
 package com.pet.pet_funeral.domain.pet_funeral.model;
 
 import com.pet.pet_funeral.domain.address.model.Address;
-import com.pet.pet_funeral.domain.common.BaseTime;
+import com.pet.pet_funeral.domain.common.domain.BaseTime;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
