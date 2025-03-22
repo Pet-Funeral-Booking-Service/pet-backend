@@ -46,8 +46,8 @@ DB_URL=jdbc:mysql://db:3306/pet_service?serverTimezone=Asia/Seoul
 DB_USERNAME=MYSQL이름
 DB_PASSWORD=MYSQL비번
 ...
-```
 
+```
 3.docker-compose 실행 (서버 실행)
 
 ```
