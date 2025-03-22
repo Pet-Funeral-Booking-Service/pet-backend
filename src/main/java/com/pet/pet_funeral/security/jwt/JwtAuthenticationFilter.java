@@ -9,7 +9,6 @@ import com.pet.pet_funeral.infra.redis.service.RedisService;
 import com.pet.pet_funeral.security.dto.LoginResponse;
 import com.pet.pet_funeral.security.service.CookieService;
 import com.pet.pet_funeral.security.service.LoginService;
-import com.pet.pet_funeral.utils.OptionalUtil;
 import com.pet.pet_funeral.utils.SuccessResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -18,7 +17,6 @@ import jakarta.servlet.ServletException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -45,7 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final LoginService loginService;
     private final CookieService cookieService;
     private final JwtService jwtService;
-    private final RefreshTokenService refreshTokenService;
+
     private final RefreshTokenRepository refreshTokenRepository;
 
     // 로그인 후 사용자가 api 요청할 때 사용되는 필터임
@@ -60,7 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response);
                 return;
             }
-            validateRefreshToken(request,response);
+            validateRefreshToken(request);
 
             String newAccessToken = String.valueOf(jwtService.extractAccessToken(request));
             validateAccessToken(newAccessToken);
@@ -73,7 +71,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     /**
      * 토큰 검증 후 filter
      */
-    private ResponseEntity<SuccessResponse> validateRefreshToken(HttpServletRequest request, HttpServletResponse response) throws JwtVerifyExceptionCode,JwtValidationExceptionCode{
+    private ResponseEntity<SuccessResponse> validateRefreshToken(HttpServletRequest request) throws JwtVerifyExceptionCode,JwtValidationExceptionCode{
         // 토큰 추출
         String refreshToken = extractRefreshToken(request);
 
@@ -117,8 +115,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (redisToken == null || !redisToken.equals(refreshToken)) {
             RefreshToken refreshTokenInDB =refreshTokenRepository.findByToken(refreshToken)
                     .orElseThrow(() -> new JwtValidationExceptionCode("존재하지 않는 토큰입니다."));
-
-            if(!refreshTokenInDB.getToken().equals(refreshToken)){
+            String tokenInDB = refreshTokenInDB.getToken();
+            if(!tokenInDB.equals(refreshToken)){
                 throw new JwtValidationExceptionCode("Refresh Token Not Matched");
             }
             redisService.saveRefreshToken(userId, refreshToken);
@@ -130,11 +128,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         log.info("요청 경로: {}", path);
         return path.startsWith("/v1/api/kakao") || path.equals("/favicon.ico") || path.startsWith("/v1/api/google");
-
     }
-/**
- * favicon  은 탭에 아이콘을 브라우저에서 자동으로 요청한다.
- * 그래서 favicon 은 토큰이 없는 경로이므로 필터에서 제외시켜야한다.
- */
+
 
 }

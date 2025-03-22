@@ -35,10 +35,10 @@ public class CookieService {
 
     public ResponseCookie createRefreshTokenCookie(final String refreshToken) {
         return ResponseCookie.from("refreshToken",refreshToken)
-                .httpOnly(true) // 자바스크립트에서 접근 불가
-                .secure(false) // https 에서만 허용(운영에서는 true)
-                .maxAge(refreshKeyExpiration) // 쿠키 유효시
-                .sameSite("Strict") // CSRF 공격 방지
+                .httpOnly(true)
+                .secure(false)
+                .maxAge(refreshKeyExpiration)
+                .sameSite("Strict")
                 .path("/")
                 .build();
     }
