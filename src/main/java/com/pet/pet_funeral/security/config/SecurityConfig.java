@@ -13,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -36,7 +35,7 @@ public class SecurityConfig {
                 .addFilterAfter(jwtAuthenticationFilter, BasicAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/v1/api/kakao/**","/login").permitAll()
+                        .requestMatchers("/v1/api/kakao/**", "/login").permitAll()
                         .requestMatchers("/v1/api/google/**").permitAll()
                         .anyRequest().authenticated()
                 );

@@ -60,6 +60,7 @@ public abstract class SocialLoginServiceImpl implements SocialLoginService{
     public abstract LoginType getLoginType();
 
     protected abstract String getToken(String code);
+
     protected abstract String getUser(String accessToken);
 
 }

@@ -54,19 +54,19 @@ public class KakaoService extends SocialLoginServiceImpl {
         return LoginType.KAKAO;
     }
 
-    public String getToken(String code){
+    public String getToken(String code) {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        MultiValueMap<String,String> params = new LinkedMultiValueMap<>();
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
         params.add("client_id", kakaoApiKey);
         params.add("redirect_uri", kakaoRedirectUri);
         params.add("code", code);
 
-        HttpEntity<MultiValueMap<String,String>> request = new HttpEntity<>(params, headers);
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
 
         ResponseEntity<KakaoTokenResponse> response = restTemplate.postForEntity(
                 kakaoTokenUrl,
@@ -75,7 +75,8 @@ public class KakaoService extends SocialLoginServiceImpl {
         );
         return response.getBody().getAccessToken();
     }
-    protected String getUser(String accessToken){
+
+    protected String getUser(String accessToken) {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -90,7 +91,6 @@ public class KakaoService extends SocialLoginServiceImpl {
                 KakaoUserResponse.class
         );
         return String.valueOf(response.getBody().getId());
-
     }
 
 }
