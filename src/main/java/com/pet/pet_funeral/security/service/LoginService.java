@@ -27,12 +27,6 @@ public class LoginService {
     private final RedisService redisService;
     private final CookieService cookieService;
 
-    @Value("${jwt.access.expiration}")
-    private long accessKeyExpiration;
-
-    @Value("${jwt.refresh.expiration}")
-    private long refreshKeyExpiration;
-
     @Transactional
     public LoginResponse login(UUID id){
         User user = OptionalUtil.getOrElseThrow(userRepository.findById(id),"존재하지 않는 이메일입니다.");
