@@ -90,7 +90,7 @@ public class KakaoService extends SocialLoginServiceImpl {
                 KakaoUserResponse.class
         );
         return String.valueOf(response.getBody().getId());
-        // 카카오에서 반환받은 Long 타입을 백엔드에서 String 으로 변환
+
     }
 
 }

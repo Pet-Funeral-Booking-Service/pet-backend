@@ -1,4 +1,5 @@
 package com.pet.pet_funeral.domain.user.service;
+import com.pet.pet_funeral.domain.user.dto.GoogleTokenResponse;
 import com.pet.pet_funeral.domain.user.dto.GoogleUserResponse;
 import com.pet.pet_funeral.domain.user.dto.KakaoTokenResponse;
 import com.pet.pet_funeral.domain.user.model.LoginType;
@@ -44,34 +45,10 @@ public class GoogleService extends SocialLoginServiceImpl {
     @Value("${google.token_url}")
     private String googleTokenUrl;
 
-    // private final String GOOGLE_LOGIN_URL = "https://accounts/google.com/o/oauth2/v2/auth";
-
-
-
     public GoogleService(UserRepository userRepository, JwtService jwtService, CookieService cookieService, RefreshTokenService refreshTokenService) {
         super(userRepository, jwtService, cookieService, refreshTokenService);
     }
 
-//    @Transactional
-//    public LoginResponse login(String code){
-//        // 토큰 받고
-//        String googleToken = getToken(code);
-//
-//        // 토큰으로 유저 불러오고
-//        String googleId = getUser(googleToken);
-//
-//        // 유저 저장
-//        User user = userRepository.findBySocialId(googleId)
-//                .orElseGet(() -> register(googleId));
-//
-//        // 내 서버 토큰 생성
-//        String accessToken = jwtService.createAccessToken(new AccessTokenPayload(user.getId(),user.getRole(),new Date()));
-//        String refreshToken = jwtService.createRefreshToken(new RefreshTokenPayload(user.getId(),new Date()));
-//        ResponseCookie responseCookie = cookieService.createRefreshTokenCookie(refreshToken);
-//        refreshTokenService.updateRefreshToken(user.getId(),refreshToken);
-//        return new LoginResponse(user.getRole(),accessToken,responseCookie);
-//
-//    }
 
     @Override
     public LoginType getLoginType() {
@@ -92,8 +69,8 @@ public class GoogleService extends SocialLoginServiceImpl {
         params.add("grant_type", "authorization_code");
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-        ResponseEntity<KakaoTokenResponse> response = restTemplate.postForEntity(
-                googleTokenUrl, request, KakaoTokenResponse.class);
+        ResponseEntity<GoogleTokenResponse> response = restTemplate.postForEntity(
+                googleTokenUrl, request, GoogleTokenResponse.class);
 
         return response.getBody().getAccessToken();
     }

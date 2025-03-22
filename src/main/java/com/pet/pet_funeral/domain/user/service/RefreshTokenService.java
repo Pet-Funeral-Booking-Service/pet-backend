@@ -21,7 +21,6 @@ public class RefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
     private final RedisService redisService;
-    private final JwtService jwtService;
     private final UserRepository userRepository;
 
     @Value("${jwt.refresh.expiration}")
