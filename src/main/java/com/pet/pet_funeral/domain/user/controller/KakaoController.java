@@ -1,4 +1,4 @@
-package com.pet.pet_funeral.api;
+package com.pet.pet_funeral.domain.user.controller;
 
 import com.pet.pet_funeral.domain.user.service.KakaoService;
 import com.pet.pet_funeral.security.dto.LoginResponse;

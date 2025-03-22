@@ -1,6 +1,6 @@
 package com.pet.pet_funeral.domain.user.model;
 
-import com.pet.pet_funeral.domain.common.BaseTime;
+import com.pet.pet_funeral.domain.common.domain.BaseTime;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;

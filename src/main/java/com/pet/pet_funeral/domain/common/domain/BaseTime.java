@@ -1,4 +1,4 @@
-package com.pet.pet_funeral.domain.common;
+package com.pet.pet_funeral.domain.common.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
