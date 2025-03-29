@@ -31,7 +31,7 @@ public class CookieServiceTest {
 
     @Test
     @DisplayName("리프레시토큰쿠키 생성 성공")
-    void 리프레시토큰쿠키_생성_성공 () throws Exception {
+    void 리프레시토큰쿠키_생성_성공 () {
         //given
         //when
         ResponseCookie refreshTokenCookie = cookieService.createRefreshTokenCookie(REFRESH_TOKEN);
@@ -42,7 +42,7 @@ public class CookieServiceTest {
 
     @Test
     @DisplayName("리프레시토큰 쿠키에서 추출 성공")
-    void 쿠키에서_토큰_추출_성공 () throws Exception {
+    void 쿠키에서_토큰_추출_성공 () {
         //given
         HttpServletRequest request = mock(HttpServletRequest.class);
         Cookie[] cookies = {
@@ -50,11 +50,12 @@ public class CookieServiceTest {
                 new Cookie("refreshToken","test-refreshToken")
         };
 
-        BDDMockito.given(request.getCookies()).willReturn(cookies);
+        BDDMockito.when(request.getCookies()).thenReturn(cookies);
         //when
         Optional<String> cookie = cookieService.getRefreshTokenFromCookie(request);
         //then
         Assertions.assertThat(cookie).isPresent();
         Assertions.assertThat(cookie.get()).isEqualTo("test-refreshToken");
+
     }
 }

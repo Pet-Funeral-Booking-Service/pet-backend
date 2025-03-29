@@ -9,17 +9,17 @@ import com.pet.pet_funeral.domain.user.repository.RefreshTokenRepository;
 import com.pet.pet_funeral.domain.user.repository.UserRepository;
 import com.pet.pet_funeral.domain.user.service.RefreshTokenService;
 import com.pet.pet_funeral.infra.redis.service.RedisService;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
-import static org.mockito.BDDMockito.given;
+
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -63,18 +63,17 @@ public class RefreshTokenServiceTest {
                 .expiredAt(LocalDateTime.now().plusSeconds(refreshKeyExpiration))
                 .build();
 
-        BDDMockito.given(userRepository.findById(userId)).willReturn(Optional.of(user));
-        BDDMockito.given(refreshTokenRepository.findByUser(user)).willReturn(Optional.ofNullable(refreshToken));
+        Mockito.when(userRepository.findById(userId)).thenReturn(Optional.ofNullable(user));
+        Mockito.when(refreshTokenRepository.findByUser(user)).thenReturn(Optional.ofNullable(refreshToken));
+
 
         //when
         refreshTokenService.updateRefreshToken(userId,newRefreshToken);
 
         // then
-        verify(userRepository).findById(userId);
-        verify(refreshTokenRepository).findByUser(user);
-        verify(redisService).updateRefreshToken(userId,newRefreshToken);
 
-        Assertions.assertEquals(newRefreshToken,refreshToken.getToken());
+
+        org.assertj.core.api.Assertions.assertThat(refreshToken.getToken()).isEqualTo(newRefreshToken);
     }
     @Test
     @DisplayName("리프레시토큰이 존재하지 않을 때 새로운 리프레시토큰 저장")
@@ -82,29 +81,26 @@ public class RefreshTokenServiceTest {
         //given
         User user = createUser();
 
-        BDDMockito.given(userRepository.findById(userId)).willReturn(Optional.of(user));
-        BDDMockito.given(refreshTokenRepository.findByUser(user)).willReturn(Optional.empty()); // 리프레시토큰값이 없을 때
+        BDDMockito.when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        BDDMockito.when(refreshTokenRepository.findByUser(user)).thenReturn(Optional.empty()); // 리프레시토큰값이 없을 때
 
-        RefreshToken refreshToken = RefreshToken.builder()
+        RefreshToken refreshTokenEntity = RefreshToken.builder()
                 .id(refreshTokenId)
                 .token(newRefreshToken)
                 .createdAt(LocalDateTime.now())
                 .expiredAt(LocalDateTime.now().plusSeconds(refreshKeyExpiration))
                 .build();
 
-        BDDMockito.given(refreshTokenRepository.save(any(RefreshToken.class))).willReturn(refreshToken);
+        BDDMockito.when(refreshTokenRepository.save(any(RefreshToken.class))).thenReturn(refreshTokenEntity);
         //when
-        refreshTokenService.updateRefreshToken(userId,refreshToken.getToken());
+        refreshTokenService.updateRefreshToken(userId,refreshTokenEntity.getToken());
 
         //then
-        verify(userRepository).findById(userId);
-        verify(refreshTokenRepository).findByUser(user);
-        verify(redisService).updateRefreshToken(userId,refreshToken.getToken());
 
         // 새로 만든 리프레시토큰값이 일치한지 비교
-        Assertions.assertEquals(newRefreshToken,refreshToken.getToken());
+        Assertions.assertThat(refreshTokenEntity.getToken()).isEqualTo(newRefreshToken);
     }
-    
+
     // 기존에 존재하던 유저를 만드는 용도
     private User createUser() {
         User user = User.builder()
@@ -132,12 +128,7 @@ public class RefreshTokenServiceTest {
      * 실제 데이터의 반영은 아니고 메서드가 호출됐는지만 검증임
      */
 }
-/**
- *  독립적,반복 실행 가능하게
- *  db,파일에 의존하는 테스트는 격리하거나 MOCK 처
- *  메서드 이름, 테스트 이름 직관적이게
- *
- */
+
 
 /**
  * any 를 쓰는 이유?

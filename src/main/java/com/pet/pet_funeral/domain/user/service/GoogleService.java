@@ -1,5 +1,6 @@
 package com.pet.pet_funeral.domain.user.service;
 
+import com.pet.pet_funeral.domain.user.dto.GoogleTokenResponse;
 import com.pet.pet_funeral.domain.user.dto.GoogleUserResponse;
 import com.pet.pet_funeral.domain.user.dto.KakaoTokenResponse;
 import com.pet.pet_funeral.domain.user.model.LoginType;
@@ -8,6 +9,9 @@ import com.pet.pet_funeral.domain.user.service.impl.SocialLoginServiceImpl;
 import com.pet.pet_funeral.security.jwt.JwtService;
 import com.pet.pet_funeral.security.service.CookieService;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -22,7 +26,7 @@ import org.springframework.web.client.RestTemplate;
 public class GoogleService extends SocialLoginServiceImpl {
 
     @Value("${google.client_id}")
-    private String googleApiKey;
+    private  String googleApiKey;
 
     @Value("${google.client_secret}")
     private String googleSecret;
@@ -64,8 +68,8 @@ public class GoogleService extends SocialLoginServiceImpl {
         params.add("grant_type", "authorization_code");
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-        ResponseEntity<KakaoTokenResponse> response = restTemplate.postForEntity(
-                googleTokenUrl, request, KakaoTokenResponse.class);
+        ResponseEntity<GoogleTokenResponse> response = restTemplate.postForEntity(
+                googleTokenUrl, request, GoogleTokenResponse.class);
 
         return response.getBody().getAccessToken();
     }
