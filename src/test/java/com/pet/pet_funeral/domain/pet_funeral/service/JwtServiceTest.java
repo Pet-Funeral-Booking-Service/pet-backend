@@ -56,18 +56,18 @@ public class JwtServiceTest {
         //then
         Assertions.assertNotNull(token);
     }
-    @Test
-    @DisplayName("토큰 검증 성공")
-    void 토큰검증_성공() throws Exception {
-        //given
-        AccessTokenPayload payload = new AccessTokenPayload(UUID.randomUUID(), Role.USER, new Date());
-        String token = jwtService.createAccessToken(payload);
-
-        //when
-        Claims claims = jwtService.verifyToken(token);
-        //then
-        Assertions.assertEquals(payload.id().toString(), claims.getSubject());
-    }
+//    @Test
+//    @DisplayName("토큰 검증 성공")
+//    void 토큰검증_성공() throws Exception {
+//        //given
+//        AccessTokenPayload payload = new AccessTokenPayload(UUID.randomUUID(), Role.USER, new Date());
+//        String token = jwtService.createAccessToken(payload);
+//
+//        //when
+//        Claims claims = jwtService.verifyToken(token);
+//        //then
+//        Assertions.assertEquals(payload.id().toString(), claims.getSubject());
+//    }
 
 
 

@@ -35,6 +35,7 @@ public abstract class SocialLoginServiceImpl implements SocialLoginService{
         String socialToken = getToken(code);
         String socialId = String.valueOf(getUser(socialToken));
 
+
         User user = userRepository.findBySocialId(socialId)
                 .orElseGet(() -> register(socialId));
 

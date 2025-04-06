@@ -40,7 +40,7 @@ public class KakaoService extends SocialLoginServiceImpl {
     @Value("${kakao.user_url}")
     private String kakaoUserUrl;
 
-    @Value("${kakao.token_url")
+    @Value("${kakao.token_url}")
     private String kakaoTokenUrl;
 
 
