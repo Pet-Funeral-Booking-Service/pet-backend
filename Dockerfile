@@ -1,5 +1,6 @@
 # base image
 FROM --platform=linux/amd64 openjdk:21-jdk-slim
+
 # 작업 디렉토리 설정
 WORKDIR /app
 
