@@ -4,7 +4,7 @@ spring:
       max-request-size: 10MB
       max-file-size: 10MB
   application:
-    name: hair_mvp
+    name: pet_funeral
   config:
     import: "optional:file:.env[.properties]"  # .env ?? ?? ??
 
@@ -23,7 +23,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
       database-platform: org.hibernate.dialect.MySQLDialect
       defer-datasource-initialization: true
     properties:
@@ -49,13 +49,13 @@ jwt:
 
 kakao:
   client_id: ${KAKAO_CLIENT_ID}
-  redirect_uri: ${KAKAO_LOGIN_REDIRECT_URL}
-  user_url: ${KAKAO_USER_URL}
-  token_url: ${KAKAO_TOKEN_URL}
+  redirect_uri: http://localhost:8080/v1/api/kakao/login
+  user_url: https://kapi.kakao.com/v2/user/me
+  token_url: https://kauth.kakao.com/oauth/token
 
 google:
   client_id: ${GOOGLE_CLIENT_ID}
   client_secret: ${GOOGLE_CLIENT_SECRET}
-  redirect_uri: ${GOOGLE_LOGIN_REDIRECT_URL}
-  user_url: ${GOOGLE_USER_URL}
-  token_url: ${GOOGLE_TOKEN_URL}
+  redirect_uri: http://localhost:8080/v1/api/google/login
+  user_url: https://www.googleapis.com/userinfo/v2/me
+  token_url: https://oauth2.googleapis.com/token

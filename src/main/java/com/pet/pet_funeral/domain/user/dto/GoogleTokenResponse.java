@@ -2,10 +2,12 @@ package com.pet.pet_funeral.domain.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
+@Builder
 public class GoogleTokenResponse {
 
     @JsonProperty("token_type")

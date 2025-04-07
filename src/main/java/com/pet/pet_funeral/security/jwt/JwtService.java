@@ -77,7 +77,7 @@ public class JwtService {
                 .claim("role",payload.role().name())
                 .issuer(issuer)
                 .issuedAt(payload.date())
-                .expiration(new Date(payload.date().getTime() + accessKeyExpiration))
+                .expiration(new Date(payload.date().getTime() + accessKeyExpiration * 1000L)) // 이거는 밀리초 단위라 1000 곱해야됨
                 .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();
     }
@@ -87,7 +87,7 @@ public class JwtService {
                 .subject(String.valueOf(payload.id()))
                 .issuer(issuer)
                 .issuedAt(payload.date())
-                .expiration(new Date(payload.date().getTime() + refreshKeyExpiration))
+                .expiration(new Date(payload.date().getTime() + refreshKeyExpiration * 1000L))
                 .signWith(SignatureAlgorithm.HS512,secretKey)
                 .compact();
     }

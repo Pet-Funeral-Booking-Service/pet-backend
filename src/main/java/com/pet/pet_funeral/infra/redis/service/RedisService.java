@@ -30,18 +30,16 @@ public class RedisService {
     }
     // 토큰 조회
     public Optional<String> getRefreshToken(UUID id){
-        return Optional.ofNullable(redisTemplate.opsForValue().get("refresh:" + id));
+        return Optional.ofNullable(redisTemplate.opsForValue().get("refresh : " + id));
     }
     // 토큰 재발급
     public void updateRefreshToken(UUID id, String newRefreshToken) {
-        // 기존 토큰 삭제 후 새 토큰 저장
-        redisTemplate.delete("refresh:" + id);
-        redisTemplate.opsForValue().set("refresh:" + id, newRefreshToken, refreshKeyExpiration, TimeUnit.SECONDS);
+        deleteRefreshToken(id);
+        saveRefreshToken(id, newRefreshToken);
     }
     // 사용자 UUID 추출 (이메일 대신 UUID 기준으로)
     public Optional<UUID> getUserIdByRefreshToken(String refreshToken) {
-        // refresh:UUID 형식
-        // refresh 로 시작하는 key 값들 가져옴
+
         Set<String> keys = redisTemplate.keys("refresh:*");
         if (keys == null || keys.isEmpty()) return Optional.empty();
 

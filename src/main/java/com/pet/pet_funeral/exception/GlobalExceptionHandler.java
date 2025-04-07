@@ -51,4 +51,5 @@ public class GlobalExceptionHandler extends RuntimeException {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new SuccessResponse<>(false, e.getMessage(), null));
     }
+
 }

@@ -1,18 +1,29 @@
 services:
   db:
-    image: mysql:8.0
-    container_name: pet-db
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}  # root 비밀번호만 설정
-      MYSQL_DATABASE: pet_service # DB 스키마 이름
-    ports:
-      - "3307:3306"
-    volumes:
-      - db-data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-    networks:
-      - pet-network
+    mysql:
+      image: mysql:8.0
+      container_name: pet-db
+      restart: always
+      environment:
+        MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}  # root 비밀번호만 설정
+        MYSQL_DATABASE: pet_service # DB 스키마 이름
+      ports:
+        - "3307:3306"
+      volumes:
+        - db-data:/var/lib/mysql
+        - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      networks:
+        - pet-network
+    redis:
+      image: redis:latest
+      container_name: pet-redis
+      restart: always
+      ports:
+        - "6379:6379"
+      volumes:
+        - redis-data:/data
+      networks:
+        - pet-network
 
   backend:
     image: ghcr.io/pet-funeral-booking-service/pet-backend-image:v1
@@ -30,6 +41,7 @@ services:
 
 volumes:
   db-data:
+  redis-data:
 
 networks:
   pet-network:
