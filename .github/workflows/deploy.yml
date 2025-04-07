@@ -21,6 +21,19 @@ jobs:
           username: ${{ github.actor }} # 푸시한 사람의 깃허브 ID
           password: ${{ secrets.GITHUB_TOKEN }} # 깃액션에서 자동으로 제공
 
+        # 도커 이미지 생성
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+       # gradlew 권한 부여
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+      - name: Build with Gradle
+        run: ./gradlew clean build
+
+
         # 도커 이미지를 git container 에 push
       - name: Build and push Docker image to GHCR
         uses: docker/build-push-action@v5
