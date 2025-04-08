@@ -8,6 +8,14 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: pet_service
+        ports:
+          - 3307:3306
 
     steps:
       - name: Checkout source code # checkout 액션으로 코드 저장소로부터 CI 서버로 코드 내려받음
