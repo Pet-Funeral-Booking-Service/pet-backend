@@ -88,6 +88,14 @@ jobs:
             docker compose pull
             docker compose up -d
 
+      - name: Upload test report
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-report
+          path: build/reports/tests/test
+
+      
+
 
 
         
