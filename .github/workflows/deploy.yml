@@ -41,8 +41,6 @@ jobs:
           java-version: '21'
 
 
-
-
        # gradlew 권한 부여
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
