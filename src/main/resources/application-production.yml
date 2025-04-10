@@ -1,0 +1,10 @@
+spring:
+  config:
+    activate:
+      on-profile: production
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3307/pet_funeral?serverTimezone=Asia/Seoul
+    username: root
+    password: wind6298
