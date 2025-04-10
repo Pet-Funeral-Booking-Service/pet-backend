@@ -1,0 +1,61 @@
+spring:
+  servlet:
+    multipart:
+      max-request-size: 10MB
+      max-file-size: 10MB
+  application:
+    name: pet_funeral
+  config:
+    import: "optional:file:.env[.properties]"  # .env ?? ?? ??
+
+  main:
+    allow-bean-definition-overriding: true
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  sql:
+    init:
+      mode: always
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+      database-platform: org.hibernate.dialect.MySQLDialect
+      defer-datasource-initialization: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        show_sql: false
+        format_sql: false
+    data:
+      redis:
+        host: localhost
+        port: 6379
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
+jwt:
+  secret-key: ${SECRET_KEY}
+  access:
+    expiration: ${ACCESS_KEY_EXPIRATION_SECONDS}
+    header: Authorization
+  refresh:
+    expiration: ${REFRESH_KEY_EXPIRATION_SECONDS}
+
+kakao:
+  client_id: ${KAKAO_CLIENT_ID}
+  redirect_uri: http://localhost:8080/v1/api/kakao/login
+  user_url: https://kapi.kakao.com/v2/user/me
+  token_url: https://kauth.kakao.com/oauth/token
+
+google:
+  client_id: ${GOOGLE_CLIENT_ID}
+  client_secret: ${GOOGLE_CLIENT_SECRET}
+  redirect_uri: http://localhost:8080/v1/api/google/login
+  user_url: https://www.googleapis.com/userinfo/v2/me
+  token_url: https://oauth2.googleapis.com/token
