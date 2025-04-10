@@ -8,14 +8,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: pet_service
-        ports:
-          - 3307:3306
 
     steps:
       - name: Checkout source code # checkout 액션으로 코드 저장소로부터 CI 서버로 코드 내려받음
@@ -35,6 +27,17 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
+
+      - name: make application-test.yml
+        run: |
+          touch ./application-test.yml
+          
+          echo "${{ secrets.DB_URL }}" >> ./application-test.yml
+          echo "${{ secrets.DB_USERNAME }}" >> ./application-test.yml
+          echo "${{ secrets.DB_PASSWORD }}" >> ./application-test.yml
+        shell: bash
+
+
        # gradlew 권한 부여
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
