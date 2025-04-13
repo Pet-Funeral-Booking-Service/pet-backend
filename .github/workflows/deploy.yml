@@ -80,7 +80,7 @@ jobs:
 
       # EC2 에 SSH 연결해서 컨테이너 자동 배포 과정
       - name: SSH to EC2 and run docker-compose
-        uses: appleboy/ssh-action@v0.1.7
+        uses: appleboy/ssh-action@master
         with: # 어디에 접속할지 정한 것
           host: ${{ secrets.EC2_PUBLIC_IP }}
           username: ubuntu
