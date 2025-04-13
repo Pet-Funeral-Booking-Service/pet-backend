@@ -8,13 +8,20 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}"
+      ACCESS_KEY_EXPIRATION_SECONDS=: ${{ secrets.ACCESS_KEY_EXPIRATION_SECONDS }}
+      REFRESH_KEY_EXPIRATION_SECONDS: ${{ secrets.REFRESH_KEY_EXPIRATION_SECONDS }}
+      KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGOLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
 
     services:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: wind6298
-          MYSQL_DATABASE: pet_funeral
+         MYSQL_ROOT_PASSWORD: wind6298
+         MYSQL_DATABASE: pet_funeral
         ports:
           - 3307:3306
         options: >-
