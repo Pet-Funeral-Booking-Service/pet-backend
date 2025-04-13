@@ -13,7 +13,7 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          MYSQL_ROOT_PASSWORD: wind6298
           MYSQL_DATABASE: pet_funeral
         ports:
           - 3307:3306
@@ -38,7 +38,7 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          distribution: 'zulu'
+          distribution: 'temurin'
           java-version: '17'
 
 
@@ -95,6 +95,8 @@ jobs:
             docker compose pull
             docker compose up -d
 
+      - name: Build and test
+        run: ./gradlew clean build --info
     
 
       
