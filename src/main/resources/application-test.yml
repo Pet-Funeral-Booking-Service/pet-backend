@@ -1,15 +1,10 @@
 spring:
-  datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MYSQL
-    username: sa
-    password:
-  h2:
-    console:
-      enabled: true
-  jpa:
-    hibernate:
-      ddl-auto: create
-    database-platform: org.hibernate.dialect.H2Dialect
+  config:
+    activate:
+      on-profile: test
 
-# 도저히 test 환경에서 mysql 오류 떠서 그냥 h2 로 테스트용 db 적용
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3307/pet_funeral?serverTimezone=Asia/Seoul
+    username: root
+    password: wind6298
