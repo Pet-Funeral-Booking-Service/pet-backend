@@ -12,14 +12,17 @@ jobs:
       contents: read
       packages: write
     env:
+      DB_URL: ${{ secrets.DB_URL }}
       DB_USERNAME: ${{ secrets.DB_USERNAME }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
       ACCESS_KEY_EXPIRATION_SECONDS=: ${{ secrets.ACCESS_KEY_EXPIRATION_SECONDS }}
       REFRESH_KEY_EXPIRATION_SECONDS: ${{ secrets.REFRESH_KEY_EXPIRATION_SECONDS }}
       KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
-      GOOGLE_CLIENT_ID: ${{ secrets.GOOGOLE_CLIENT_ID }}
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
       GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
+      EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
 
     steps:
       - name: Checkout source code # checkout 액션으로 코드 저장소로부터 CI 서버로 코드 내려받음
@@ -74,9 +77,11 @@ jobs:
           echo "ACCESS_KEY_EXPIRATION_SECONDS=${{ secrets.ACCESS_KEY_EXPIRATION_SECONDS }}" >> .env
           echo "REFRESH_KEY_EXPIRATION_SECONDS=${{ secrets.REFRESH_KEY_EXPIRATION_SECONDS }}" >> .env
           echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> .env
-          echo "GOOGOLE_CLIENT_ID=${{ secrets.GOOGOLE_CLIENT_ID }}" >> .env
+          echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
           echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
-
+          echo "EC2_PUBLIC_IP=${{ secrets.EC2_PUBLIC_IP }}" >> .env
+          echo "EC2_SSH_PRIVATE_KEY=${{ secrets.EC2_SSH_PRIVATE_KEY }}" >> .env
+          
 
       # EC2 에 SSH 연결해서 컨테이너 자동 배포 과정
       - name: SSH to EC2 and run docker-compose
