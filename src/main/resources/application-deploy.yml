@@ -7,4 +7,4 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://pet-funeral-db.cpuaeay8sypv.ap-northeast-2.rds.amazonaws.com:3306/pet-funeral-db?serverTimezone=Asia/Seoul
     username: admin
-    password: wind6298
+    password: ${DB_PASSWORD}

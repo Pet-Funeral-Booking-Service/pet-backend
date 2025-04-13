@@ -15,7 +15,7 @@ import org.springframework.test.context.TestPropertySource;
 
 import java.io.IOException;
 
-@SpringBootTest
+@SpringBootTest(classes = GoogleServiceUnitTest.class)
 @TestPropertySource(properties = {
         "google.client_id=test-client-id",
         "google.client_secret=test-secret",

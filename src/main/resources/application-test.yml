@@ -7,7 +7,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3307/pet_funeral?serverTimezone=Asia/Seoul
     username: root
-    password: wind6298
+    password: ${DB_PASSWORD}
 
 kakao:
   client_id: ${KAKAO_CLIENT_ID}
