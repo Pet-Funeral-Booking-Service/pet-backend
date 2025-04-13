@@ -9,7 +9,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      SECRET_KEY: ${{ secrets.SECRET_KEY }}"
+      DB_USERNAME: ${{ secrets.DB_USERNAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
       ACCESS_KEY_EXPIRATION_SECONDS=: ${{ secrets.ACCESS_KEY_EXPIRATION_SECONDS }}
       REFRESH_KEY_EXPIRATION_SECONDS: ${{ secrets.REFRESH_KEY_EXPIRATION_SECONDS }}
       KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
