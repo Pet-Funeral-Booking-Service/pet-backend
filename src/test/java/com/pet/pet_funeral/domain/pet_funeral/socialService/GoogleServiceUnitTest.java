@@ -16,7 +16,6 @@ import org.springframework.test.context.TestPropertySource;
 import java.io.IOException;
 
 @SpringBootTest
-@ActiveProfiles(profiles = "test")
 @TestPropertySource(properties = {
         "google.client_id=test-client-id",
         "google.client_secret=test-secret",
