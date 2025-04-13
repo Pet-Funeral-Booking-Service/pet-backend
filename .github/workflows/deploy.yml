@@ -23,7 +23,7 @@ jobs:
       GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
       EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
       EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-      GHCR_TOKEN: ${{ secretes.GHCR_TOKEN }}
+      GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
 
     steps:
       - name: Checkout source code # checkout 액션으로 코드 저장소로부터 CI 서버로 코드 내려받음
