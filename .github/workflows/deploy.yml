@@ -92,7 +92,8 @@ jobs:
           source: |
             docker-compose.yml
             .env
-          target: ~/home/ubuntu/app
+          target: /home/ubuntu/app
+          working-directory: ./pet-backend
 
       # EC2 에 SSH 연결해서 컨테이너 자동 배포 과정
       - name: SSH to EC2 and run docker-compose
