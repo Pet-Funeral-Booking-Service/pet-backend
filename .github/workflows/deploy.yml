@@ -93,8 +93,8 @@ jobs:
           source: |
             ./docker-compose.yml
             ./.env
-          working-directory: ./pet-backend
           target: /home/ubuntu/app
+          working-directory: ./pet-backend
           script: | # 명령어 나열
             cd /home/ubuntu/app
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin 
