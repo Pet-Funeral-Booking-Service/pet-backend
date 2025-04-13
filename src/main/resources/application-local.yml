@@ -7,5 +7,5 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/pet_funeral?serverTimezone=Asia/Seoul&useSSL=false&allowPublicKeyRetrieval=true&authenticationPlugins=com.mysql.cj.protocol.a.authentication.CachingSha2PasswordPlugin
     username: root
-    password: wind6298
+    password: ${DB_PASSWORD}
 

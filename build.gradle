@@ -68,6 +68,11 @@ dependencies {
 	runtimeOnly "io.jsonwebtoken:jjwt-jackson:${JJWT_VERSION}"
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
+tasks.test {
+	testLogging {
+		showExceptions = true
+		exceptionFormat "full"
+		showStackTraces true
+	}
+
 }
