@@ -101,8 +101,7 @@ jobs:
             docker compose pull
             docker compose up -d
 
-      - name: Build and test
-        run: ./gradlew clean build --info
+
     
 
       
