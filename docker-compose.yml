@@ -25,7 +25,7 @@ services:
         - pet-network
 
   backend:
-    image: ghcr.io/pet-funeral-booking-service/pet-backend-image:v1
+    image: ghcr.io/pet-funeral-booking-service/pet-backend-service:v1
     container_name: pet-backend
     restart: always
     depends_on:
