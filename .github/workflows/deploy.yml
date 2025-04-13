@@ -73,9 +73,9 @@ jobs:
           echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
           echo "ACCESS_KEY_EXPIRATION_SECONDS=${{ secrets.ACCESS_KEY_EXPIRATION_SECONDS }}" >> .env
           echo "REFRESH_KEY_EXPIRATION_SECONDS=${{ secrets.REFRESH_KEY_EXPIRATION_SECONDS }}" >> .env
-          echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }} >> .env
-          echo "GOOGOLE_CLIENT_ID=${{ secrets.GOOGOLE_CLIENT_ID }} >> .env
-          echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} >> .env
+          echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> .env
+          echo "GOOGOLE_CLIENT_ID=${{ secrets.GOOGOLE_CLIENT_ID }}" >> .env
+          echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
 
       - name: Upload docker-compose.yml and .env to EC2
         uses: appleboy/scp-action@v0.1.7 # 깃허브 리포지토리 파일을 EC2 서버에 복사
